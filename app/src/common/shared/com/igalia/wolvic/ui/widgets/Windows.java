@@ -877,6 +877,8 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
                 placement.rotationAxisZ = 0;
                 placement.translationX = 0.0f;
                 placement.translationY = WidgetPlacement.unitFromMeters(mContext, R.dimen.window_world_y);
+                // center the window vertically relative to its default position
+                placement.translationY += (SettingsStore.WINDOW_HEIGHT_DEFAULT - placement.height) / 2.0f;
                 placement.translationZ = WidgetPlacement.unitFromMeters(mContext, R.dimen.window_world_z);
                 break;
             case LEFT:
@@ -884,6 +886,7 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
                 placement.anchorY = 0.0f;
                 placement.parentAnchorX = 0.0f;
                 placement.parentAnchorY = 0.0f;
+                placement.parentAnchorGravity = WidgetPlacement.GRAVITY_CENTER_Y;
                 placement.rotationAxisX = 0;
                 placement.rotationAxisZ = 0;
                 if (curvedMode) {
@@ -902,6 +905,7 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
                 placement.anchorY = 0.0f;
                 placement.parentAnchorX = 1.0f;
                 placement.parentAnchorY = 0.0f;
+                placement.parentAnchorGravity = WidgetPlacement.GRAVITY_CENTER_Y;
                 placement.rotationAxisX = 0;
                 placement.rotationAxisZ = 0;
                 if (curvedMode) {

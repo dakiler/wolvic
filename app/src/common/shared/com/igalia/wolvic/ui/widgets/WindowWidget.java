@@ -199,6 +199,9 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         mViewModel.setUrl(mSession.getCurrentUri());
         mViewModel.setIsDesktopMode(mSession.getUaMode() == WSessionSettings.USER_AGENT_MODE_DESKTOP);
 
+        // re-center the front window when its height changes
+        mViewModel.getHeight().observe((VRBrowserActivity) getContext(), observableInt -> centerFrontWindowVertically());
+
         mUIThreadExecutor = ((VRBrowserApplication)getContext().getApplicationContext()).getExecutors().mainThread();
 
         mListeners = new CopyOnWriteArrayList<>();
@@ -976,7 +979,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
     public void handleResizeEvent(float aWorldWidth, float aWorldHeight) {
         int width = getWindowWidth(aWorldWidth);
         float aspect = aWorldWidth / aWorldHeight;
-        int height = (int) Math.floor((float)width / aspect);
+        int height = (int) Math.floor((float) width / aspect);
         mWidgetPlacement.width = width + mBorderWidth * 2;
         mWidgetPlacement.height = height + mBorderWidth * 2;
         mWidgetPlacement.worldWidth = aWorldWidth;
@@ -985,6 +988,18 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
 
         mViewModel.setWidth(mWidgetPlacement.width);
         mViewModel.setHeight(mWidgetPlacement.height);
+    }
+
+    private void centerFrontWindowVertically() {
+        if (mWindowPlacement != Windows.WindowPlacement.FRONT)
+            return;
+
+        // default position
+        mWidgetPlacement.translationY = WidgetPlacement.unitFromMeters(getContext(), R.dimen.window_world_y);
+        // center vertically relative to the default position
+        mWidgetPlacement.translationY += (SettingsStore.WINDOW_HEIGHT_DEFAULT - mWidgetPlacement.height) / 2.0f;
+        mWidgetManager.updateWidget(this);
+        mWidgetManager.updateVisibleWidgets();
     }
 
     @Override
