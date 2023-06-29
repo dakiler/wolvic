@@ -200,7 +200,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         mViewModel.setIsDesktopMode(mSession.getUaMode() == WSessionSettings.USER_AGENT_MODE_DESKTOP);
 
         // re-center the front window when its height changes
-        mViewModel.getHeight().observe((VRBrowserActivity) getContext(), observableInt -> centerFrontWindowVertically());
+        mViewModel.getHeight().observe((VRBrowserActivity) getContext(), observableInt -> centerFrontWindowIfNeeded());
 
         mUIThreadExecutor = ((VRBrowserApplication)getContext().getApplicationContext()).getExecutors().mainThread();
 
@@ -990,7 +990,10 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         mViewModel.setHeight(mWidgetPlacement.height);
     }
 
-    private void centerFrontWindowVertically() {
+    private void centerFrontWindowIfNeeded() {
+        if (!SettingsStore.getInstance(getContext()).isCenterWindows())
+            return;
+
         if (mWindowPlacement != Windows.WindowPlacement.FRONT)
             return;
 

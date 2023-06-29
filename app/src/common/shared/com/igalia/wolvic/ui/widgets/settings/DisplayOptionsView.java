@@ -55,6 +55,9 @@ class DisplayOptionsView extends SettingsView {
         mBinding.curvedDisplaySwitch.setOnCheckedChangeListener(mCurvedDisplayListener);
         setCurvedDisplay(SettingsStore.getInstance(getContext()).getCylinderDensity() > 0.0f, false);
 
+        mBinding.centerWindowsSwitch.setOnCheckedChangeListener(mCenterWindowsListener);
+        setCenterWindows(SettingsStore.getInstance(getContext()).isCenterWindows(), false);
+
         int uaMode = SettingsStore.getInstance(getContext()).getUaMode();
         mBinding.uaRadio.setOnCheckedChangeListener(mUaModeListener);
         setUaMode(mBinding.uaRadio.getIdForValue(uaMode), false);
@@ -175,6 +178,9 @@ class DisplayOptionsView extends SettingsView {
     private SwitchSetting.OnCheckedChangeListener mCurvedDisplayListener = (compoundButton, enabled, apply) ->
             setCurvedDisplay(enabled, true);
 
+    private SwitchSetting.OnCheckedChangeListener mCenterWindowsListener = (compoundButton, enabled, apply) ->
+            setCenterWindows(enabled, true);
+
     private OnClickListener mResetListener = (view) -> {
         boolean restart = false;
 
@@ -192,6 +198,7 @@ class DisplayOptionsView extends SettingsView {
         setHomepage(mDefaultHomepageUrl);
         setAutoplay(SettingsStore.AUTOPLAY_ENABLED, true);
         setCurvedDisplay(false, true);
+        setCenterWindows(SettingsStore.CENTER_WINDOWS_DEFAULT, false);
 
         if (restart) {
             showRestartDialog();
@@ -207,6 +214,17 @@ class DisplayOptionsView extends SettingsView {
             float density = value ? SettingsStore.CYLINDER_DENSITY_ENABLED_DEFAULT : 0.0f;
             SettingsStore.getInstance(getContext()).setCylinderDensity(density);
             mWidgetManager.setCylinderDensity(density);
+        }
+    }
+
+    private void setCenterWindows(boolean value, boolean doApply) {
+        mBinding.centerWindowsSwitch.setOnCheckedChangeListener(null);
+        mBinding.centerWindowsSwitch.setValue(value, false);
+        mBinding.centerWindowsSwitch.setOnCheckedChangeListener(mCenterWindowsListener);
+
+        if (doApply) {
+            SettingsStore.getInstance(getContext()).setCenterWindows(value);
+            mWidgetManager.setCenterWindows(value);
         }
     }
 

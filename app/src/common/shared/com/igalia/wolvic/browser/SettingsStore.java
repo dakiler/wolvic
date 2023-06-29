@@ -96,6 +96,7 @@ public class SettingsStore {
     public final static int MSAA_DEFAULT_LEVEL = 1;
     public final static boolean AUDIO_ENABLED = false;
     public final static float CYLINDER_DENSITY_ENABLED_DEFAULT = 4680.0f;
+    public final static boolean CENTER_WINDOWS_DEFAULT = false;
     private final static long CRASH_RESTART_DELTA = 2000;
     public final static boolean AUTOPLAY_ENABLED = false;
     public final static boolean DEBUG_LOGGING_DEFAULT = BuildConfig.DEBUG;
@@ -554,6 +555,17 @@ public class SettingsStore {
 
     public boolean isCurvedModeEnabled() {
         return getCylinderDensity() > 0;
+    }
+
+    public boolean isCenterWindows() {
+        return mPrefs.getBoolean(
+                mContext.getString(R.string.settings_key_center_windows), CENTER_WINDOWS_DEFAULT);
+    }
+
+    public void setCenterWindows(boolean isEnabled) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putBoolean(mContext.getString(R.string.settings_key_center_windows), isEnabled);
+        editor.commit();
     }
 
     public void setSelectedKeyboard(Locale aLocale) {
