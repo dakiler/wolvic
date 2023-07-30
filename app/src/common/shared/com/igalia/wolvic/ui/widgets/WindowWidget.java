@@ -41,6 +41,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.igalia.wolvic.R;
 import com.igalia.wolvic.VRBrowserActivity;
 import com.igalia.wolvic.VRBrowserApplication;
+import com.igalia.wolvic.addons.views.AddonsPanel;
+import com.igalia.wolvic.browser.Addons;
 import com.igalia.wolvic.browser.BookmarksStore;
 import com.igalia.wolvic.browser.Media;
 import com.igalia.wolvic.browser.PromptDelegate;
@@ -128,6 +130,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
     private int mWindowId;
     private LibraryPanel mLibrary;
     private DownloadsPanel mDownloads;
+    private AddonsPanel mAddons;
     private Windows.WindowPlacement mWindowPlacement = Windows.WindowPlacement.FRONT;
     private Windows.WindowPlacement mWindowPlacementBeforeFullscreen = Windows.WindowPlacement.FRONT;
     private float mMaxWindowScale = 3;
@@ -209,6 +212,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
 
         mLibrary = new LibraryPanel(aContext);
         mDownloads = new DownloadsPanel(aContext);
+        mAddons = new AddonsPanel(aContext);
 
         SessionStore.get().getBookmarkStore().addListener(mBookmarksListener);
 
@@ -333,6 +337,11 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
                 hideDownloadsPanel();
             }
 
+        } else if (mViewModel.getIsAddonsVisible().getValue().get()) {
+            if (!mAddons.onBack()) {
+                hideAddonsPanel();
+            }
+
         } else {
             if (mSession.canGoBack()) {
                 mSession.goBack();
@@ -365,6 +374,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
 
         mLibrary.onConfigurationChanged(newConfig);
         mDownloads.onConfigurationChanged(newConfig);
+        mAddons.onConfigurationChanged(newConfig);
 
         mViewModel.refresh();
     }
@@ -375,6 +385,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         releaseWidget();
         mLibrary.onDestroy();
         mDownloads.onDestroy();
+        mAddons.onDestroy();
         mViewModel.setIsTopBarVisible(false);
         mViewModel.setIsTitleBarVisible(false);
         SessionStore.get().destroySession(mSession);
@@ -493,6 +504,10 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         return mViewModel.getIsDownloadsVisible().getValue().get();
     }
 
+    public boolean isAddonsVisible() {
+        return mViewModel.getIsAddonsVisible().getValue().get();
+    }
+
     public int getWindowWidth() {
         return mWidgetPlacement.width;
     }
@@ -506,9 +521,15 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         return mLibrary.getSelectedPanelType();
     }
 
-    private void hideLibraryPanel() {
+    private void hideAllPanel(boolean switchSurface) {
         if (mViewModel.getIsLibraryVisible().getValue().get()) {
-            hidePanel(true);
+            hidePanel(switchSurface);
+        }
+        if (mViewModel.getIsDownloadsVisible().getValue().get()) {
+            hideDownloadsPanel(switchSurface);
+        }
+        if (mViewModel.getIsAddonsVisible().getValue().get()) {
+            hideAddonsPanel(switchSurface);
         }
     }
 
@@ -519,6 +540,9 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         } else {
             if (mViewModel.getIsDownloadsVisible().getValue().get()) {
                 hideDownloadsPanel(false);
+            }
+            if (mViewModel.getIsAddonsVisible().getValue().get()) {
+                hideAddonsPanel(false);
             }
             showPanel(panelType, true);
             mViewModel.refresh();
@@ -533,7 +557,26 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
             if (mViewModel.getIsLibraryVisible().getValue().get()) {
                 hidePanel(false);
             }
+            if (mViewModel.getIsAddonsVisible().getValue().get()) {
+                hideAddonsPanel(false);
+            }
             showDownloadsPanel(true);
+            mViewModel.refresh();
+        }
+    }
+
+    public void switchAddonsPanel() {
+        if (mViewModel.getIsAddonsVisible().getValue().get()) {
+            hideAddonsPanel(true);
+
+        } else {
+            if (mViewModel.getIsLibraryVisible().getValue().get()) {
+                hidePanel(false);
+            }
+            if (mViewModel.getIsDownloadsVisible().getValue().get()) {
+                hideDownloadsPanel(false);
+            }
+            showAddonsPanel(true);
             mViewModel.refresh();
         }
     }
@@ -621,6 +664,37 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
             unsetView(mDownloads, switchSurface);
             mDownloads.onHide();
             mViewModel.setIsDownloadsVisible(false);
+        }
+        if (switchSurface) {
+            hidePanelCommonAction();
+        }
+    }
+
+    public void showAddonsPanel() {
+        showAddonsPanel(true);
+    }
+
+    private void showAddonsPanel(boolean switchSurface) {
+        if (mAddons != null) {
+            if (mView == null) {
+                setView(mAddons, switchSurface);
+                mAddons.onShow();
+                mViewModel.setIsAddonsVisible(true);
+                showPanelCommonAction();
+
+            }
+        }
+    }
+
+    public void hideAddonsPanel() {
+        hideAddonsPanel(true);
+    }
+
+    private void hideAddonsPanel(boolean switchSurface) {
+        if (mView != null && mAddons != null) {
+            unsetView(mAddons, switchSurface);
+            mAddons.onHide();
+            mViewModel.setIsAddonsVisible(false);
         }
         if (switchSurface) {
             hidePanelCommonAction();
@@ -1205,7 +1279,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         mCaptureOnPageStop = false;
 
         if (hidePanel) {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
     }
 
@@ -1586,17 +1660,17 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
     private NavigationBarWidget.NavigationListener mNavigationBarListener = new NavigationBarWidget.NavigationListener() {
         @Override
         public void onBack() {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
 
         @Override
         public void onForward() {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
 
         @Override
         public void onReload() {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
 
         @Override
@@ -1606,7 +1680,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
 
         @Override
         public void onHome() {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
     };
 
@@ -1950,6 +2024,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
 
         Uri uri = Uri.parse(aRequest.uri);
         if (UrlUtils.isAboutPage(uri.toString())) {
+            hideAllPanel(false);
             if(UrlUtils.isBookmarksUrl(uri.toString())) {
                 showPanel(Windows.BOOKMARKS);
 
@@ -1960,14 +2035,14 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
                 showDownloadsPanel();
 
             } else if (UrlUtils.isAddonsUrl(uri.toString())) {
-                showPanel(Windows.ADDONS);
+                showAddonsPanel();
 
             } else {
-                hideLibraryPanel();
+                hidePanelCommonAction();
             }
 
         } else {
-            hideLibraryPanel();
+            hideAllPanel(true);
         }
 
         if ("file".equalsIgnoreCase(uri.getScheme())) {
