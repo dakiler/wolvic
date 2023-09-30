@@ -30,7 +30,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import mozilla.components.feature.addons.Addon
-import mozilla.components.feature.addons.amo.AddonCollectionProvider
+import mozilla.components.feature.addons.amo.AMOAddonsProvider
 import mozilla.components.feature.addons.ui.AddonsManagerAdapterDelegate
 import mozilla.components.feature.addons.ui.CustomViewHolder
 import mozilla.components.feature.addons.ui.CustomViewHolder.AddonViewHolder
@@ -57,7 +57,7 @@ private const val VIEW_HOLDER_TYPE_ADDON = 1
  */
 @Suppress("TooManyFunctions", "LargeClass")
 class AddonsManagerAdapter(
-        private val addonCollectionProvider: AddonCollectionProvider,
+        private val addonCollectionProvider: AMOAddonsProvider,
         private val addonsManagerDelegate: AddonsManagerAdapterDelegate,
         addons: List<Addon>,
         private val style: Style? = null

@@ -10,6 +10,8 @@ import com.igalia.wolvic.browser.engine.Session
 import mozilla.components.concept.engine.EngineSession
 import mozilla.components.concept.engine.EngineSessionState
 import mozilla.components.concept.engine.Settings
+import mozilla.components.concept.engine.shopping.ProductAnalysis
+import mozilla.components.concept.engine.shopping.ProductRecommendation
 import org.json.JSONObject
 
 class WolvicEngineSession(
@@ -38,6 +40,18 @@ class WolvicEngineSession(
     override fun reload(flags: LoadUrlFlags) = Unit
     override fun requestPdfToDownload() = Unit
     override fun requestPrintContent() = Unit
+    override fun requestProductAnalysis(
+        url: String,
+        onResult: (ProductAnalysis) -> Unit,
+        onException: (Throwable) -> Unit
+    ) = Unit
+
+    override fun requestProductRecommendations(
+        url: String,
+        onResult: (List<ProductRecommendation>) -> Unit,
+        onException: (Throwable) -> Unit
+    ) = Unit
+
     override fun restoreState(state: EngineSessionState) = true
     override fun stopLoading() = Unit
     override fun toggleDesktopMode(enable: Boolean, reload: Boolean) = Unit
