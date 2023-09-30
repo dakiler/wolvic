@@ -8,7 +8,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$versions.android_gradle_plugin"
         classpath 'com.android.tools:r8:8.2.33'
         classpath "$deps.kotlin.plugin"
-        classpath 'com.huawei.agconnect:agcp:1.6.5.300'
+        classpath 'com.huawei.agconnect:agcp:1.9.1.301'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -27,7 +27,7 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
     delete "${rootDir}/third_party/wavesdk/build"
 }
