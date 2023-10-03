@@ -691,12 +691,15 @@ void OpenXRInputSource::EmulateControllerFromHand(device::RenderMode renderMode,
     }
 #endif
 
+    vrb::Matrix pointerTransformStandalone;
     if (renderMode == device::RenderMode::StandAlone)
-        pointerTransform.TranslateInPlace(kAverageHeight);
+        pointerTransformStandalone = pointerTransform.Translate(kAverageHeight);
+    else
+        pointerTransformStandalone = pointerTransform;
 
-    delegate.SetTransform(mIndex, pointerTransform);
+    delegate.SetTransform(mIndex, vrb::Matrix::Identity());
     delegate.SetImmersiveBeamTransform(mIndex, pointerTransform);
-    delegate.SetBeamTransform(mIndex, vrb::Matrix::Identity());
+    delegate.SetBeamTransform(mIndex, pointerTransformStandalone);
 
     device::CapabilityFlags flags = device::Orientation | device::Position | device::GripSpacePosition;
     delegate.SetCapabilityFlags(mIndex, flags);
