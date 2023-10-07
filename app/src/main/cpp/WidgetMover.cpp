@@ -162,13 +162,32 @@ WidgetMover::HandleMove(const vrb::Vector& aStart, const vrb::Vector& aDirection
     return m.HandleKeyboardMove(delta);
   } else {
     // General case
-    vrb::Matrix updatedTransform = m.initialTransform.Translate(vrb::Vector(delta.x(), delta.y(), 0.0f));
-    m.widget->SetTransform(updatedTransform);
-    m.endDelta.x() = delta.x() / WidgetPlacement::kWorldDPIRatio;
-    m.endDelta.y() = delta.y() / WidgetPlacement::kWorldDPIRatio;
-    m.endDelta.z() = 0.0f;
+    const float maxX = 1.5f;
+    const float minX = -maxX;
+    const float maxY = 3.0f;
+    const float minY = -maxY;
+    vrb::Vector translation = m.initialPlacement->translation;
+    float x = translation.x() * WidgetPlacement::kWorldDPIRatio;
+    float y = translation.y() * WidgetPlacement::kWorldDPIRatio;
+    x += delta.x();
+    y += delta.y();
+
+    float w, h;
+    m.widget->GetWorldSize(w, h);
+    const float dx = w * (m.anchorPoint.x() - 0.5f);
+    const float dy = h * m.anchorPoint.y();
+
+    x = fmin(x, maxX + dx);
+    x = fmax(x, minX - dx);
+    y = fmin(y, maxY + dy);
+    y = fmax(y, minY + dy);
+
+    m.movePlacement->translation.x() = x / WidgetPlacement::kWorldDPIRatio;
+    m.movePlacement->translation.y() = y / WidgetPlacement::kWorldDPIRatio;
+    m.endDelta = m.movePlacement->translation - translation;
     m.endRotation = 0.0f;
-    return nullptr;
+
+    return m.movePlacement;
   }
 }
 
