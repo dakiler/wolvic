@@ -691,15 +691,22 @@ void OpenXRInputSource::EmulateControllerFromHand(device::RenderMode renderMode,
     }
 #endif
 
-    vrb::Matrix pointerTransformStandalone;
     if (renderMode == device::RenderMode::StandAlone)
-        pointerTransformStandalone = pointerTransform.Translate(kAverageHeight);
-    else
-        pointerTransformStandalone = pointerTransform;
+        pointerTransform.TranslateInPlace(kAverageHeight);
 
+#if CHROMIUM
+    // Blink WebXR uses the grip space instead of the local space to position the
+    // controller. Since controller's position is the same as the origin of the
+    // grip space, we just set the transform matrix to the identity.
+    // Then we need to correct the beam transform matrix to maintain origin and
+    // direction when we are not in immersive mode.
     delegate.SetTransform(mIndex, vrb::Matrix::Identity());
+    delegate.SetBeamTransform(mIndex, pointerTransform);
+#else
+    delegate.SetTransform(mIndex, pointerTransform);
+    delegate.SetBeamTransform(mIndex, vrb::Matrix::Identity());
+#endif
     delegate.SetImmersiveBeamTransform(mIndex, pointerTransform);
-    delegate.SetBeamTransform(mIndex, pointerTransformStandalone);
 
     device::CapabilityFlags flags = device::Orientation | device::Position | device::GripSpacePosition;
     delegate.SetCapabilityFlags(mIndex, flags);
