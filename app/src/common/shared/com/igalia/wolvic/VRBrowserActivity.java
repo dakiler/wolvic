@@ -1645,6 +1645,14 @@ public class VRBrowserActivity extends PlatformActivity implements WidgetManager
     }
 
     @Override
+    public void updateWidgetsPlacementTranslationZ() {
+        for (Widget widget: mWidgets.values()) {
+            widget.getPlacement().updateCylinderMapRadius();
+            widget.updatePlacementTranslationZ();
+        }
+    }
+
+    @Override
     public void updateVisibleWidgets() {
         queueRunnable(this::updateVisibleWidgetsNative);
     }

@@ -38,6 +38,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <com.igalia.wolvic.ui.views.settings.SliderSetting
+                    android:id="@+id/window_distance_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:description="@string/display_options_windows_distance"
+                    app:stepSize="0.1"
+                    app:valueFrom="0.0"
+                    app:valueTo="1.0" />
+
                 <com.igalia.wolvic.ui.views.settings.SwitchSetting
                     android:id="@+id/curved_display_switch"
                     android:layout_width="match_parent"
@@ -49,6 +58,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:description="@string/display_options_start_with_passthrough" />
+
+                <com.igalia.wolvic.ui.views.settings.SwitchSetting
+                    android:id="@+id/autoplaySwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:description="@string/security_options_autoplay" />
 
                 <com.igalia.wolvic.ui.views.settings.RadioGroupSetting
                     android:id="@+id/ua_radio"
@@ -65,12 +80,6 @@
                     app:description="@string/developer_options_msaa"
                     app:options="@array/developer_options_msaa"
                     app:values="@array/developer_options_msaa_mode_values" />
-
-                <com.igalia.wolvic.ui.views.settings.SwitchSetting
-                    android:id="@+id/autoplaySwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:description="@string/security_options_autoplay" />
 
                 <com.igalia.wolvic.ui.views.settings.SingleEditSetting
                     android:id="@+id/homepage_edit"

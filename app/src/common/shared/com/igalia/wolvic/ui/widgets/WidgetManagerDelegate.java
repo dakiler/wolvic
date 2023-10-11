@@ -64,6 +64,7 @@ public interface WidgetManagerDelegate {
     void addWidget(Widget aWidget);
     void updateWidget(Widget aWidget);
     void removeWidget(Widget aWidget);
+    void updateWidgetsPlacementTranslationZ();
     void updateVisibleWidgets();
     void recreateWidgetSurface(Widget aWidget);
     void startWidgetResize(Widget aWidget, float maxWidth, float maxHeight, float minWidth, float minHeight);

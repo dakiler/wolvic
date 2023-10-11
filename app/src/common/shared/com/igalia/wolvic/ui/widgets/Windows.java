@@ -3,6 +3,8 @@ package com.igalia.wolvic.ui.widgets;
 import static com.igalia.wolvic.ui.widgets.settings.SettingsView.SettingViewType.FXA;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
@@ -48,6 +50,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import mozilla.components.concept.sync.AccountObserver;
@@ -121,6 +124,7 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
     }
 
     private Context mContext;
+    private SharedPreferences mPrefs;
     private WidgetManagerDelegate mWidgetManager;
     private Delegate mDelegate;
     private ArrayList<WindowWidget> mRegularWindows;
@@ -200,6 +204,9 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
         mConnectivityReceived.addListener(mConnectivityDelegate);
 
         mDownloadsManager = mWidgetManager.getServicesProvider().getDownloadsManager();
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.registerOnSharedPreferenceChangeListener(mPreferencesListener);
 
         mIsRestoreEnabled = SettingsStore.getInstance(mContext).isRestoreTabsEnabled();
         mWindowsState = restoreState();
@@ -536,6 +543,7 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
         mAccounts.removeAccountListener(mAccountObserver);
         mServices.setTabReceivedDelegate(null);
         mConnectivityReceived.removeListener(mConnectivityDelegate);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(mPreferencesListener);
     }
 
     public boolean isInPrivateMode() {
@@ -877,7 +885,7 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
                 placement.rotationAxisZ = 0;
                 placement.translationX = 0.0f;
                 placement.translationY = WidgetPlacement.unitFromMeters(mContext, R.dimen.window_world_y);
-                placement.translationZ = WidgetPlacement.unitFromMeters(mContext, R.dimen.window_world_z);
+                placement.translationZ = WidgetPlacement.getWindowWorldZMeters(mContext);
                 break;
             case LEFT:
                 placement.anchorX = 1.0f;
@@ -1032,6 +1040,21 @@ public class Windows implements TrayListener, TopBarWidget.Delegate, TitleBarWid
             }
         }
     }
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener mPreferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (!Objects.equals(key, mContext.getString(R.string.settings_key_window_distance)))
+                return;
+
+            WindowWidget frontWindow = getFrontWindow();
+            if (frontWindow != null) {
+                frontWindow.getPlacement().translationZ = WidgetPlacement.getWindowWorldZMeters(mContext);
+                mWidgetManager.updateWidgetsPlacementTranslationZ();
+                updateViews();
+            }
+        }
+    };
 
     private AccountObserver mAccountObserver = new AccountObserver() {
         @Override
