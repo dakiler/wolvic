@@ -14,10 +14,14 @@ import com.igalia.wolvic.utils.UrlUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class SuggestionsProvider {
 
@@ -180,11 +184,60 @@ public class SuggestionsProvider {
         return future;
     }
 
+    private CompletableFuture<List<SuggestionItem>> removeDuplicatedItems(@NonNull final List<SuggestionItem> items) {
+        CompletableFuture<List<SuggestionItem>> future = new CompletableFuture<>();
+
+        Map<String, List<Integer>> category = new HashMap<>();
+        Map<String, Integer> best = new HashMap<>();
+
+        // Filter out duplicate items based on the URL
+        for (int i = 0; i < items.size(); i++) {
+            SuggestionItem thisItem = items.get(i);
+            // Normalize URLs to remove 'http'/'https' and trailing slashes
+            String normalizedUrl = thisItem.url.replaceAll("^https?://", "").replaceAll("/$", "");
+            if (best.containsKey(normalizedUrl)) {
+                SuggestionItem bestItem = items.get(best.get(normalizedUrl));
+                // Select the best one that uses 'https' and contains trailing slashes
+                if (thisItem.url.startsWith("https:") && bestItem.url.startsWith("http:") ||
+                        thisItem.url.endsWith("/") && !bestItem.url.endsWith("/") ) {
+                    best.put(normalizedUrl, i);
+                }
+            } else {
+                category.put(normalizedUrl, new ArrayList<>());
+                best.put(normalizedUrl, i);
+            }
+            category.get(normalizedUrl).add(i);
+        }
+
+        List<Integer> toRemove = new ArrayList<>();
+        // Calculate the index to remove (category - best)
+        for (String url : category.keySet()) {
+            toRemove.addAll(category.get(url).stream().filter(
+                    index -> !Objects.equals(index, best.get(url))).collect(Collectors.toList()));
+        }
+
+        List<SuggestionItem> uniqueItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (!toRemove.contains(i)) {
+                uniqueItems.add(items.get(i));
+            }
+        }
+
+        if (mComparator != null) {
+            items.sort(mComparator);
+        }
+
+        future.complete(uniqueItems);
+
+        return future;
+    }
+
     public CompletableFuture<List<SuggestionItem>> getSuggestions() {
         return CompletableFuture.supplyAsync((Supplier<ArrayList<SuggestionItem>>) ArrayList::new)
                 .thenComposeAsync(this::getSearchEngineSuggestions)
                 .thenComposeAsync(this::getBookmarkSuggestions)
-                .thenComposeAsync(this::getHistorySuggestions);
+                .thenComposeAsync(this::getHistorySuggestions)
+                .thenComposeAsync(this::removeDuplicatedItems);
     }
 
 }
