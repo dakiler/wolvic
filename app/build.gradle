@@ -192,103 +192,105 @@ android {
     flavorDimensions "platform", "abi", "backend", "store"
 
     productFlavors {
+        //Kaidi，不用的flavor，先注释掉
+
         // Supported platforms
-        oculusvr {
-            dimension "platform"
-            targetSdkVersion build_versions.target_sdk_oculusvr
-            externalNativeBuild {
-                cmake {
-                    cppFlags "-DOCULUSVR" + getOpenXRFlags()
-                    arguments "-DVR_SDK_LIB=oculusvr-lib", "-DVR_SDK_EXTRA_LIB=ovrplatform-lib", "-DOCULUSVR=ON", getOpenXRCMakeFlags()
-                }
-            }
-            manifestPlaceholders = [ headtrackingRequired:"false", permissionToRemove:"android.permission.RECEIVE_BOOT_COMPLETED" ]
-        }
-
-        wavevr {
-            minSdkVersion build_versions.min_sdk_wave
-            targetSdkVersion build_versions.target_sdk_wave
-            dimension "platform"
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -I" + file("${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/include").absolutePath +
-                            " -DWAVEVR"
-                    arguments "-DVR_SDK_LIB=wavevr-lib", "-DWAVEVR=ON", "-DWAVE_SDK_VERSION=${versions.wavevr}"
-                }
-            }
-            applicationIdSuffix ".internal"
-        }
-
-        wavevrStore {
-            minSdkVersion build_versions.min_sdk_wave
-            targetSdkVersion build_versions.target_sdk_wave
-            dimension "platform"
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -I" + file("${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/include").absolutePath +
-                            " -DWAVEVR"
-                    arguments "-DVR_SDK_LIB=wavevr-lib", "-DWAVEVR=ON", "-DWAVE_SDK_VERSION=${versions.wavevr}"
-                }
-            }
-        }
-
-        picoxr {
-            dimension "platform"
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -DPICOXR -DOPENXR -I" + file("src/openxr/cpp").absolutePath
-                    arguments "-DVR_SDK_LIB=picoxr-lib", "-DPICOXR=ON", "-DOPENXR=ON"
-                }
-            }
-        }
-
-        lynx {
-            dimension "platform"
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -DLYNX -DOPENXR -I" + file("src/openxr/cpp").absolutePath
-                    arguments "-DLYNX=ON", "-DOPENXR=ON"
-                }
-            }
-        }
-
-        spaces {
-            dimension "platform"
-            targetSdkVersion build_versions.target_sdk_spaces
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -DSPACES -DOPENXR -I" + file("src/openxr/cpp").absolutePath
-                    arguments "-DSPACES=ON", "-DOPENXR=ON"
-                }
-            }
-        }
-
-        aosp {
-            dimension "platform"
-            targetSdkVersion build_versions.target_sdk_aosp
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -DAOSP -DOPENXR -I" + file("src/openxr/cpp").absolutePath
-                    arguments "-DAOSP=ON", "-DOPENXR=ON"
-                }
-            }
-        }
-
-        hvr {
-            dimension "platform"
-            externalNativeBuild {
-                cmake {
-                    cppFlags " -DHVR -DOPENXR -I" + file("src/openxr/cpp").absolutePath
-                    arguments "-DVR_SDK_LIB=hvr-lib", "-DHVR=ON", "-DOPENXR=ON"
-                }
-            }
-            buildConfigField "String", "HVR_APP_ID", "\"${getHVRAppId()}\""
-            buildConfigField "String", "HVR_API_KEY", "\"${getHVRApiKey()}\""
-            buildConfigField "String", "MK_API_KEY", "\"\""
-            buildConfigField "String[]", "SPEECH_SERVICES", "${getHVRMLSpeechServices()}"
-            buildConfigField "Boolean", "SUPPORTS_SYSTEM_NOTIFICATIONS", "true"
-            buildConfigField "Boolean", "WEBVIEW_IN_PHONE_UI", "true"
-        }
+//        oculusvr {
+//            dimension "platform"
+//            targetSdkVersion build_versions.target_sdk_oculusvr
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags "-DOCULUSVR" + getOpenXRFlags()
+//                    arguments "-DVR_SDK_LIB=oculusvr-lib", "-DVR_SDK_EXTRA_LIB=ovrplatform-lib", "-DOCULUSVR=ON", getOpenXRCMakeFlags()
+//                }
+//            }
+//            manifestPlaceholders = [ headtrackingRequired:"false", permissionToRemove:"android.permission.RECEIVE_BOOT_COMPLETED" ]
+//        }
+//
+//        wavevr {
+//            minSdkVersion build_versions.min_sdk_wave
+//            targetSdkVersion build_versions.target_sdk_wave
+//            dimension "platform"
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -I" + file("${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/include").absolutePath +
+//                            " -DWAVEVR"
+//                    arguments "-DVR_SDK_LIB=wavevr-lib", "-DWAVEVR=ON", "-DWAVE_SDK_VERSION=${versions.wavevr}"
+//                }
+//            }
+//            applicationIdSuffix ".internal"
+//        }
+//
+//        wavevrStore {
+//            minSdkVersion build_versions.min_sdk_wave
+//            targetSdkVersion build_versions.target_sdk_wave
+//            dimension "platform"
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -I" + file("${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/include").absolutePath +
+//                            " -DWAVEVR"
+//                    arguments "-DVR_SDK_LIB=wavevr-lib", "-DWAVEVR=ON", "-DWAVE_SDK_VERSION=${versions.wavevr}"
+//                }
+//            }
+//        }
+//
+//        picoxr {
+//            dimension "platform"
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -DPICOXR -DOPENXR -I" + file("src/openxr/cpp").absolutePath
+//                    arguments "-DVR_SDK_LIB=picoxr-lib", "-DPICOXR=ON", "-DOPENXR=ON"
+//                }
+//            }
+//        }
+//
+//        lynx {
+//            dimension "platform"
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -DLYNX -DOPENXR -I" + file("src/openxr/cpp").absolutePath
+//                    arguments "-DLYNX=ON", "-DOPENXR=ON"
+//                }
+//            }
+//        }
+//
+//        spaces {
+//            dimension "platform"
+//            targetSdkVersion build_versions.target_sdk_spaces
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -DSPACES -DOPENXR -I" + file("src/openxr/cpp").absolutePath
+//                    arguments "-DSPACES=ON", "-DOPENXR=ON"
+//                }
+//            }
+//        }
+//
+//        aosp {
+//            dimension "platform"
+//            targetSdkVersion build_versions.target_sdk_aosp
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -DAOSP -DOPENXR -I" + file("src/openxr/cpp").absolutePath
+//                    arguments "-DAOSP=ON", "-DOPENXR=ON"
+//                }
+//            }
+//        }
+//
+//        hvr {
+//            dimension "platform"
+//            externalNativeBuild {
+//                cmake {
+//                    cppFlags " -DHVR -DOPENXR -I" + file("src/openxr/cpp").absolutePath
+//                    arguments "-DVR_SDK_LIB=hvr-lib", "-DHVR=ON", "-DOPENXR=ON"
+//                }
+//            }
+//            buildConfigField "String", "HVR_APP_ID", "\"${getHVRAppId()}\""
+//            buildConfigField "String", "HVR_API_KEY", "\"${getHVRApiKey()}\""
+//            buildConfigField "String", "MK_API_KEY", "\"\""
+//            buildConfigField "String[]", "SPEECH_SERVICES", "${getHVRMLSpeechServices()}"
+//            buildConfigField "Boolean", "SUPPORTS_SYSTEM_NOTIFICATIONS", "true"
+//            buildConfigField "Boolean", "WEBVIEW_IN_PHONE_UI", "true"
+//        }
 
         noapi {
             dimension "platform"
@@ -296,6 +298,17 @@ android {
                 cmake {
                     cppFlags " -DVRBROWSER_NO_VR_API"
                     arguments "-DNOAPI=ON"
+                }
+            }
+        }
+
+        //Kaidi,添加RayNeo flavor
+        rayneo {
+            dimension "platform"
+            externalNativeBuild {
+                cmake {
+                    cppFlags " -DVRBROWSER_NO_VR_API"
+                    arguments "-DRAYNEO=ON"
                 }
             }
         }
@@ -414,105 +427,111 @@ android {
                                                            : manifest.srcFile
         }
 
-        oculusvr {
-            java.srcDirs = [
-                    'src/oculusvr/java'
-            ]
-        }
-
-        wavevr {
-            java.srcDirs = [
-                    'src/wavevr/java'
-            ]
-            res.srcDirs = [
-                    'src/wavevr/res'
-            ]
-            jniLibs.srcDirs = ["${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/jni"]
-            packagingOptions {
-                jniLibs.pickFirsts.add("lib/**/libwvr_api.so")
-                jniLibs.pickFirsts.add("lib/**/liboverlay_api.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
-                jniLibs.pickFirsts.add("lib/**/libdummy.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
-                jniLibs.pickFirsts.add("lib/**/libdummy.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
-                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
-                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
-                jniLibs.pickFirsts.add("lib/**/libsvrapi.so")
-            }
-        }
-
-        wavevrStore {
-            java.srcDirs = [
-                    'src/wavevr/java'
-            ]
-            res.srcDirs = [
-                    'src/wavevr/res'
-            ]
-            assets.srcDirs = [
-                    'src/wavevr/assets'
-            ]
-            jniLibs.srcDirs = ["${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/jni"]
-            manifest.srcFile "src/wavevr/AndroidManifest.xml"
-            packagingOptions {
-                jniLibs.pickFirsts.add("lib/**/libwvr_api.so")
-                jniLibs.pickFirsts.add("lib/**/liboverlay_api.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
-                jniLibs.pickFirsts.add("lib/**/libdummy.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
-                jniLibs.pickFirsts.add("lib/**/libdummy.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
-                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
-                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
-                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
-                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
-                jniLibs.pickFirsts.add("lib/**/libsvrapi.so")
-            }
-        }
-
-        hvr {
-            java.srcDirs = [
-                    'src/hvr/java'
-            ]
-            assets.srcDirs = [
-                    'src/hvr/assets'
-            ]
-            res.srcDirs = [
-                    'src/hvr/res'
-            ]
-        }
-
-        lynx {
-            manifest.srcFile "src/lynx/AndroidManifest.xml"
-        }
-
-        spaces {
-            manifest.srcFile "src/spaces/AndroidManifest.xml"
-        }
-
-        aosp {
-            manifest.srcFile "src/aosp/AndroidManifest.xml"
-        }
+//        oculusvr {
+//            java.srcDirs = [
+//                    'src/oculusvr/java'
+//            ]
+//        }
+//
+//        wavevr {
+//            java.srcDirs = [
+//                    'src/wavevr/java'
+//            ]
+//            res.srcDirs = [
+//                    'src/wavevr/res'
+//            ]
+//            jniLibs.srcDirs = ["${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/jni"]
+//            packagingOptions {
+//                jniLibs.pickFirsts.add("lib/**/libwvr_api.so")
+//                jniLibs.pickFirsts.add("lib/**/liboverlay_api.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
+//                jniLibs.pickFirsts.add("lib/**/libdummy.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
+//                jniLibs.pickFirsts.add("lib/**/libdummy.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
+//                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
+//                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
+//                jniLibs.pickFirsts.add("lib/**/libsvrapi.so")
+//            }
+//        }
+//
+//        wavevrStore {
+//            java.srcDirs = [
+//                    'src/wavevr/java'
+//            ]
+//            res.srcDirs = [
+//                    'src/wavevr/res'
+//            ]
+//            assets.srcDirs = [
+//                    'src/wavevr/assets'
+//            ]
+//            jniLibs.srcDirs = ["${project.rootDir}/third_party/wavesdk/build/wvr_client-${versions.wavevr}/jni"]
+//            manifest.srcFile "src/wavevr/AndroidManifest.xml"
+//            packagingOptions {
+//                jniLibs.pickFirsts.add("lib/**/libwvr_api.so")
+//                jniLibs.pickFirsts.add("lib/**/liboverlay_api.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
+//                jniLibs.pickFirsts.add("lib/**/libdummy.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
+//                jniLibs.pickFirsts.add("lib/**/libdummy.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
+//                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore_component.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_runtime.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_internal_using_assimp.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_ctf_internal_common.so")
+//                jniLibs.pickFirsts.add("lib/**/libvr_jni.so")
+//                jniLibs.pickFirsts.add("lib/**/libvrcore.so")
+//                jniLibs.pickFirsts.add("lib/**/libwvr_monitor.so")
+//                jniLibs.pickFirsts.add("lib/**/libsvrapi.so")
+//            }
+//        }
+//
+//        hvr {
+//            java.srcDirs = [
+//                    'src/hvr/java'
+//            ]
+//            assets.srcDirs = [
+//                    'src/hvr/assets'
+//            ]
+//            res.srcDirs = [
+//                    'src/hvr/res'
+//            ]
+//        }
+//
+//        lynx {
+//            manifest.srcFile "src/lynx/AndroidManifest.xml"
+//        }
+//
+//        spaces {
+//            manifest.srcFile "src/spaces/AndroidManifest.xml"
+//        }
+//
+//        aosp {
+//            manifest.srcFile "src/aosp/AndroidManifest.xml"
+//        }
 
         noapi {
             java.srcDirs = [
                     'src/noapi/java'
+            ]
+        }
+
+        rayneo {
+            java.srcDirs = [
+                    'src/rayneo/java'
             ]
         }
 
@@ -583,7 +602,7 @@ configurations {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
     // Common
     implementation deps.lifecycle.runtime
@@ -672,19 +691,19 @@ dependencies {
     implementation 'org.apache.commons:commons-math3:3.6.1'
 
     // HVR
-    hvrImplementation fileTree(dir: "${project.rootDir}/third_party/hvr", include: ['*.jar'])
-    hvrImplementation 'com.huawei.agconnect:agconnect-core-harmony:1.1.0.300'
-    hvrImplementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
-    hvrImplementation 'com.huawei.hms:hianalytics:6.3.2.300'
-    hvrImplementation 'com.huawei.hms:ml-computer-voice-asr:3.1.0.300'
-    hvrImplementation 'com.huawei.hms:location:6.2.0.300'
-    hvrImplementation 'com.huawei.hms:push:6.5.0.300'
-
-    // Lynx
-    lynxImplementation fileTree(dir: "${project.rootDir}/third_party/lynx", include: ['*.aar'])
-
-    // Snapdragon Spaces
-    spacesImplementation fileTree(dir: "${project.rootDir}/third_party/spaces", include: ['*.aar'])
+//    hvrImplementation fileTree(dir: "${project.rootDir}/third_party/hvr", include: ['*.jar'])
+//    hvrImplementation 'com.huawei.agconnect:agconnect-core-harmony:1.1.0.300'
+//    hvrImplementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
+//    hvrImplementation 'com.huawei.hms:hianalytics:6.3.2.300'
+//    hvrImplementation 'com.huawei.hms:ml-computer-voice-asr:3.1.0.300'
+//    hvrImplementation 'com.huawei.hms:location:6.2.0.300'
+//    hvrImplementation 'com.huawei.hms:push:6.5.0.300'
+//
+//    // Lynx
+//    lynxImplementation fileTree(dir: "${project.rootDir}/third_party/lynx", include: ['*.aar'])
+//
+//    // Snapdragon Spaces
+//    spacesImplementation fileTree(dir: "${project.rootDir}/third_party/spaces", include: ['*.aar'])
 
     // HTC Vive
     if (!gradle.startParameter.taskNames.isEmpty() &&

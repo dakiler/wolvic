@@ -187,8 +187,8 @@ deps.colorpicker = "com.github.skydoves:colorpickerpreference:2.0.6"
 ext.deps = deps
 
 def build_versions = [:]
-build_versions.min_sdk = 24
-build_versions.min_sdk_wave = 25
+build_versions.min_sdk = 29
+build_versions.min_sdk_wave = 26
 build_versions.target_sdk = 33
 build_versions.target_sdk_oculusvr = 32
 build_versions.target_sdk_wave = 31
